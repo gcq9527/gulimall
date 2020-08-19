@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://192.168.127.129:3306/gulimall_oms
+    driver-class-name: com.mysql.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: gulimall-order
+  rabbitmq:
+    host: 192.168.127.129
+    port: 5672
+    virtual-host: /
+    publisher-confirms: true  #开启发送段确认
+    publisher-returns: true  #开启发送端消息抵达队列的确认
+    template:
+      mandatory: true #抵达队列 以异步发送优先回调我们这个returnconfirm
+    listener:
+      simple:
+        acknowledge-mode: manual #手动ack消息 手动确认收货
+  thymeleaf:
+    cache: false
+  session:
+    store-type: redis
+  redis:
+    host: 192.168.127.129
+    port: 6379
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+server:
+  port: 9001
+
+
+
+
+

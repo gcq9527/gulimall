@@ -1,0 +1,162 @@
+[client]
+default-character-set=utf8
+
+[mysql]
+default-character-set=utf8
+[mysqld]
+init_connect='SET collation_connection = utf8_unicode_ci'
+init_connect='SET NAMES utf8'
+character-set-server=utf8
+collection-server=utf8_unicode_ci
+skip-character-set-client-handshake
+skip-name-resolve
+
+init_connect='SET collation_connection = utf8_unicode_ci'
+init_connect='SET collation_connection = utf8_unicode_ci'
+docker run -p 3306:3306 --name mysql \
+-v /mydata/mysql/log:/var/log/mysql \
+-v /mydata/mysql/data:/var/lib/mysql \
+-v /mydata/mysql/conf:/etc/mysql \
+-e MYSQL_ROOT_PASSWORD=root \
+-d mysql:5.7
+
+
+mkdir -p /mydata/elasticsearch/config
+mkdir -p /mydata/elasticsearch/data
+c
+
+
+docker run --name elasticsearch -p 9200:9200 -p 9300:9300 \
+-e "discovery.type=single-node" \
+-e ES_JAVA_OPTS="-Xms64m -Xmx512m" \
+-v /mydata/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml \
+-v /mydata/elasticsearch/data:/usr/share/elasticsearch/data \
+-v /mydata/elasticsearch/plugins:/usr/share/elasticsearch/plugins \
+-d elasticsearch:7.4.2
+
+docker run --name kibana -e ELASTICSEARCH_URL=http://192.168.159.134:9200 -p 5601:5601 -d kibana:7.4.2
+
+
+docker run --name kibana -e ELASTICSEARCH_HOSTS=http://192.168.159.131:9200 -p 5601:5601 \
+-d kibana:7.4.2
+
+docker run -it -d -e ELASTICSEARCH_URL=http://192.168.159.134:9200 --name kibana --network=container:elasticsearch kibana:7.4.2
+
+
+
+docker run --name kibana -p 5601:5601 \
+--link elasticsearch:es \
+-e "elasticsearch.hosts=http://192.168.159.134:9200" \
+-d kibana:7.4.2
+
+
+docker run -p 80:80 --name nginx -d nginx:1.10
+docker container cp nginx:/etc/nginx/ .
+mv nginx.conf
+mkdir nginx
+mv conf nginx/
+
+
+docker run -p 80:80 --name nginx \
+-v /mydata/nginx/html:/usr/share/nginx/html \
+-v /mydata/nginx/logs:/var/log/nginx \
+-v /mydata/nginx/conf:/etc/nginx \
+-d nginx:1.10  
+
+
+
+Elasticsearch 索引
+
+PUT product
+{
+  "mappings":{
+    "properties":{
+      "skuId":{
+        "type":"long"
+      },
+       "spuId":{
+        "type":"keyword"
+      },
+       "skuTitle":{
+        "type":"text",
+        "analyzer": "ik_smart"
+      },
+       "skuPrice":{
+        "type":"keyword"
+      },
+       "skuImg":{
+        "type":"text",
+        "analyzer": "ik_smart"
+      },
+       "saleCount":{
+        "type":"long"
+      },
+       "hasStock":{
+        "type":"boolean"
+      },
+      "hotScore":{
+        "type":"long"
+      },
+      "brandId":{
+        "type":"long"
+      },
+      "catelogId":{
+        "type":"long"
+      },
+      "brandName":{
+        "type":"keyword",
+        "index": false,
+        "doc_values": false
+      },
+      "brandImg":{
+        "type":"keyword",
+         "index": false,
+        "doc_values": false
+      },
+      "catalogName":{
+        "type":"keyword",
+         "index": false,
+         "doc_values": false
+      },
+      "attrs":{
+        "type":"nested",
+        "properties": {
+          "attrId":{
+            "type":"long"
+          },
+          "attrName":{
+            "type":"keyword",
+            "index":false,
+            "doc_values":false
+          },
+          "attrValue": {
+            "type":"keyword"
+          }
+        }
+      }
+    }
+  }
+}
+nginx 在每次电脑重启后都需要改宿主机的名字
+elasticsearch启动失败也需要去更改对应的地址
+
+
+if redis.call("get",KEYS[1]) == ARGV[1]  then return redis.call("del",KEYS[1]) else return 0 end
+
+
+nginx配置
+ cp default.conf gulimall.conf
+ 
+ proxy_set_header Host #host;
+ server_name gulimall.com
+ 
+ proxy_pass http://192.168.159.1:10001;   // gulimall.com
+ 
+ 
+ nginx.conf
+	upstream gulimall {
+	server  192.168.56.1:88;
+	}
+
+
+docker run -d -p 9411:9411 openzipkin/zipkin

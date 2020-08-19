@@ -1,0 +1,15 @@
+package com.atguigu.gulimall.seckill.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+/**
+ * @author Guo
+ * @Create 2020/8/9 14:40
+ */
+@EnableAsync
+@EnableScheduling
+@Configuration
+public class Scheduleding {
+}
